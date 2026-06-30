@@ -58,6 +58,29 @@ builds:
       - linux_mips64le_softfloat
       - linux_riscv64
 
+  - id: gst
+    tool: '{{ .Env.GO_BINARY }}'
+    dir: server
+    main: ./cmd
+    binary: '{{ .ProjectName }}-gst-{{ .Os }}-{{ if eq .Arch "arm" }}arm{{ .Arm }}{{ else }}{{ .Arch }}{{ end }}'
+    no_unique_dist_dir: true
+    flags:
+      - -trimpath
+    tags:
+      - nosqlite
+      - gst
+    ldflags:
+      # .Version equals .Tag on release; snapshots get -<commit> (see snapshot.version_template)
+      - -s -w -checklinkname=0 -X server/version.Version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    targets:
+      - linux_amd64
+      - linux_arm64
+      - darwin_amd64
+      - darwin_arm64
+      - windows_amd64
+
   - id: android
     dir: server
     main: ./cmd
@@ -103,6 +126,7 @@ upx:
   - enabled: '{{ .Env.UPX_ENABLED }}'
     ids:
       - binary
+      - gst
       - binary-android
     goos:
       - linux

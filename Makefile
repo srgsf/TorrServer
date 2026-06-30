@@ -134,6 +134,15 @@ binary: $(prereqs)
 		build $(GORELEASER_COMMON_FLAGS) $(GORELEASER_BUILD_FLAGS) $(SKIP_BEFORE_FLAG) \
 		--id=binary
 
+gst: $(prereqs)
+	@echo "Building gst binary  GOOS=$(GOOS)  GOARCH=$(GOARCH)  GOARM=$(GOARM)..."
+	$(GORELEASER_RUN) \
+		$(if $(USE_LOCAL_TOOLS),, \
+			-e GOOS=$(GOOS) -e GOARCH=$(GOARCH) -e GOARM=$(GOARM) \
+			$(IMAGE_BUILDER)) \
+		build $(GORELEASER_COMMON_FLAGS) $(GORELEASER_BUILD_FLAGS) $(SKIP_BEFORE_FLAG) \
+		--id=gst
+
 android: $(prereqs) guard-ndk
 	@echo "Building Android binary  GOARCH=$(GOARCH)  GOARM=$(GOARM)..."
 	GOOS=android $(GORELEASER_RUN) \
@@ -199,6 +208,7 @@ help:
 	@echo "Usage: make [target] [OPTIONS]"
 	@echo ""
 	@echo "  binary       Build binary for host platform  (default)"
+	@echo "  gst          Build binary with GStreamer support for host platform"
 	@echo "  android      Build Android binary"
 	@echo "  dist         Snapshot of all platform binaries"
 	@echo "  release      Real release via goreleaser"

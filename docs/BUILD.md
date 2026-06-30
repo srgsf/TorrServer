@@ -59,6 +59,9 @@ docker run --privileged --rm tonistiigi/binfmt --install all
 # Build binary for the host platform (default target)
 make
 
+# Build binary for the host platform with GStreamer support
+make gst
+
 # Build Android binary (GOARCH and GOARM are required)
 make android GOARCH=arm GOARM=7
 
